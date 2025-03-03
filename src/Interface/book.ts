@@ -9,3 +9,10 @@ export interface BookCardProps {
     genre: string;
     publicationYear: number;
   }
+
+  export interface CreateBookResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: any; 
+  }

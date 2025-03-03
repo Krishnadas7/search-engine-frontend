@@ -1,11 +1,10 @@
 import React, { Fragment } from 'react'
-import SearchComponent from './component/SearchComponent'
+import SearchPage from './pages/SearchPage'
 
 function App() {
   return (
     <Fragment>
-    
-     <SearchComponent/>
+     <SearchPage/>
     </Fragment>
   )
 }

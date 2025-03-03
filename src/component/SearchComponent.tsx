@@ -1,29 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { BookOpen, Search, BookmarkPlus, ChevronRight, Star, Clock, X } from 'lucide-react';
 import BookCard from './BookCard';
-import { Book } from '../Interface/book';
+import { Book, CreateBookResponse } from '../Interface/book';
 import toast from "react-hot-toast";
-
 import axios from 'axios';
-interface CreateBookResponse {
-    success: boolean;
-    statusCode: number;
-    message: string;
-    data?: any; 
-  }
-// Book data
-const booksData: Book[] = [
-  { title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Classic", publicationYear: 1925 },
-  { title: "To Kill a Mockingbird", author: "Harper Lee", genre: "Classic", publicationYear: 1960 },
-  { title: "1984", author: "George Orwell", genre: "Dystopian", publicationYear: 1949 },
-  { title: "The Catcher in the Rye", author: "J.D. Salinger", genre: "Classic", publicationYear: 1951 },
-  { title: "The Hobbit", author: "J.R.R. Tolkien", genre: "Fantasy", publicationYear: 1937 },
-  { title: "Pride and Prejudice", author: "Jane Austen", genre: "Romance", publicationYear: 1813 },
-  { title: "Moby Dick", author: "Herman Melville", genre: "Adventure", publicationYear: 1851 },
-  { title: "The Alchemist", author: "Paulo Coelho", genre: "Philosophical", publicationYear: 1988 },
-  { title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling", genre: "Fantasy", publicationYear: 1997 },
-  { title: "The Lord of the Rings", author: "J.R.R. Tolkien", genre: "Fantasy", publicationYear: 1954 },
-];
+
+
 
 const BookSearchComponent: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -37,12 +19,11 @@ const BookSearchComponent: React.FC = () => {
     genre: '',
     publicationYear: 0
   });
-  const [books, setBooks] = useState<Book[]>(booksData);
+  const [books, setBooks] = useState<Book[]>([]);
   useEffect(() => {
     async function getBooks() {
       try {
         const response = await axios.get<{ success: boolean; data: Book[] }>(process.env.BASE_URL as string);
-        console.log('resfro ===',response.data.data)
         setBooks(response.data.data); // Ensure you're setting only the array
       } catch (error) {
         console.error("Error fetching books:", error);
@@ -74,7 +55,7 @@ const BookSearchComponent: React.FC = () => {
       }
     } catch (error: any) {
       console.error("Error searching books:", error.response?.data?.message || error.message);
-      setFilteredBooks([]); // Clear the list in case of an error
+      setFilteredBooks([]); 
     }
   };
 
@@ -114,9 +95,9 @@ const BookSearchComponent: React.FC = () => {
     try {
       const response = await axios.post<CreateBookResponse>(process.env.BASE_URL as string, newBook);
   
-      toast.success(response?.data.message); // Show success message
-      setChangVal(!changVal); // Toggle state to trigger re-render if needed
-      toggleModal(); // Close modal after submission
+      toast.success(response?.data.message); 
+      setChangVal(!changVal); 
+      toggleModal(); 
     } catch (error: any) {
       alert(error.response?.data?.message || "Failed to add book");
     }
@@ -124,7 +105,6 @@ const BookSearchComponent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-indigo-600 text-white py-8">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center">
@@ -148,9 +128,7 @@ const BookSearchComponent: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Search Section */}
         <div className="max-w-3xl mx-auto -mt-16 bg-white rounded-xl shadow-md p-6">
           <div className="relative mb-6">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -165,7 +143,6 @@ const BookSearchComponent: React.FC = () => {
             />
           </div>
 
-          {/* Search results */}
           {filteredBooks.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredBooks.map((book, index) => (
@@ -174,7 +151,6 @@ const BookSearchComponent: React.FC = () => {
             </div>
           )}
 
-          {/* Empty state with suggestions */}
           {filteredBooks.length === 0 && !selectedBook && searchQuery === '' && (
             <div className="py-8 text-center">
               <BookOpen className="h-12 w-12 mx-auto text-indigo-200 mb-4" />
@@ -201,7 +177,6 @@ const BookSearchComponent: React.FC = () => {
             </div>
           )}
 
-          {/* Selected book details */}
           {selectedBook && (
             <div className="bg-white border border-gray-200 rounded-lg p-6 mt-4">
               <button 
@@ -254,7 +229,6 @@ const BookSearchComponent: React.FC = () => {
           )}
         </div>
         
-        {/* Featured Section */}
         {!selectedBook && filteredBooks.length === 0 && (
           <div className="max-w-6xl mx-auto mt-16">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Featured Books</h2>
@@ -281,7 +255,6 @@ const BookSearchComponent: React.FC = () => {
         )}
       </main>
 
-      {/* Add Book Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg w-full max-w-md p-6 relative">
